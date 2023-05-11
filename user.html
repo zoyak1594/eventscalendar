@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Evo Calendar</title>
+         <!-- evo-calendar.css, followed by [theme-name].css (optional) -->
+        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.css"/>
+        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.midnight-blue.css"/>
+        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.royal-navy.min.css">
+        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.orange-coral.min.css">
+
+            <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet">
+    </head>
+    <body>
+
+        <!-- // this is where your calendar goes.. :) -->
+        <div id="calendar"></div>
+
+        <!-- // evo-calendar.js, right after jQuery (required) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="./evo-calendar/js/evo-calendar.js"></script>
+
+        <script>
+        // initialize your calendar, once the page's DOM is ready
+        $(document).ready(function() {
+            $('#calendar').evoCalendar({
+                theme: 'Royal Navy'
+            })
+        })
+
+        </script>
+
+    </body>
+</html>

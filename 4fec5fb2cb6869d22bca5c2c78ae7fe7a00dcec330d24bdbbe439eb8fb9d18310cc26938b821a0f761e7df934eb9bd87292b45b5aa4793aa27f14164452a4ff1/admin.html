@@ -3,10 +3,10 @@
     <head>
         <title>Afterwork </title>
          <!-- evo-calendar.css, followed by [theme-name].css (optional) -->
-        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.css"/>
-        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.midnight-blue.css"/>
-        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.royal-navy.min.css">
-        <link rel="stylesheet" type="text/css" href="./evo-calendar/css/evo-calendar.orange-coral.min.css">
+        <link rel="stylesheet" type="text/css" href="../evo-calendar/css/evo-calendar.css"/>
+        <link rel="stylesheet" type="text/css" href="../evo-calendar/css/evo-calendar.midnight-blue.css"/>
+        <link rel="stylesheet" type="text/css" href="../evo-calendar/css/evo-calendar.royal-navy.min.css">
+        <link rel="stylesheet" type="text/css" href="../evo-calendar/css/evo-calendar.orange-coral.min.css">
 
             <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
@@ -42,7 +42,8 @@
 
         <!-- // evo-calendar.js, right after jQuery (required) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="./evo-calendar/js/evo-calendar.js"></script>
+        <script src="../evo-calendar/js/evo-calendar.js"></script>
+
 
         <script>
 
@@ -52,6 +53,30 @@
             $('#calendar').evoCalendar({
                 theme: 'Royal Navy'
             });
+
+
+            fetch('https://afterwork-platform-revamp.vercel.app/api/events')  
+            .then(response => response.json())
+            .then(data => {
+
+                data.data.forEach(event => {
+               $('#calendar').evoCalendar('addCalendarEvent', {
+               id: event.id,
+               name: event.name,
+               date: event.date,
+               time: event.time,
+               location: event.location,
+               link: event.link,
+               type: 'event'
+    });
+                })
+            
+  })
+  .catch(error => {
+    // Handle any errors that occur during the request
+    console.error(error);
+  });
+
             addBtn.addEventListener("click", openAddEventPopup);
             saveEvent.addEventListener("click", addEvent);
             cancelEvent.addEventListener("click", closeAndEmptyAddEventPopup);
@@ -67,7 +92,7 @@
                 document.getElementById("event-location").value = "";
                 document.getElementById("event-time").value = "";
             }
-            function addEvent() {
+    function addEvent() {
     const date = new Date();
     const timezoneOffsetInHours = (date.getTimezoneOffset()) / 60;
     const stringtimezoneOffsetInHours = timezoneOffsetInHours.toString().padStart(2, '0');
@@ -84,22 +109,40 @@
         return;
     }
 
-    // Add the event to the calendar
-    $('#calendar').evoCalendar('addCalendarEvent', {
-        id: name,
+    const addNewEvent = {
         name: name,
         date: (dateInput+"T"+time+":00-"+stringtimezoneOffsetInHours+":00"),
         time: time,
         location: location,
         link: link,
         type: 'event'
+    }
+
+    fetch('https://afterwork-platform-revamp.vercel.app/api/events', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token').replace(/"/g, '')}`
+
+  },
+  body: JSON.stringify(addNewEvent),
+})
+  .then(response => response.json())
+  .then(data => {
+    // Add the event to the calendar using the returned data
+    $('#calendar').evoCalendar('addCalendarEvent', {
+      id: data.data[0].id,
+      name: data.data[0].name,
+      date: data.data[0].date,
+      time: data.data[0].time,
+      location: data.data[0].location,
+      link: data.data[0].link,
+      type: 'event'
     });
+  });
 
     // Save the event to the Supabase database
-    const eventsTable = supabase.from('events');
-    eventsTable.insert([{ name, date: dateInput, time, location, link }])
-      .then(res => console.log(res))
-      .catch(err => console.error(err));
+
 
     // Clear the input fields and close the add event popup
     closeAndEmptyAddEventPopup();

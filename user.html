@@ -28,6 +28,29 @@
             $('#calendar').evoCalendar({
                 theme: 'Royal Navy'
             })
+
+            fetch('https://afterwork-platform-revamp.vercel.app/api/events')  
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.data)
+
+                data.data.forEach(event => {
+               $('#calendar').evoCalendar('addCalendarEvent', {
+               id: event.id,
+               name: event.name,
+               date: event.date,
+               time: event.time,
+               location: event.location,
+               link: event.link,
+               type: 'event'
+    });
+                })
+            
+  })
+  .catch(error => {
+    // Handle any errors that occur during the request
+    console.error(error);
+  });
         })
 
         </script>
